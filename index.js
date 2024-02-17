@@ -9,13 +9,20 @@ const firebaseConfig = {
     appId: "1:597834107013:web:19464cd0b4b8dd009c81ec",
     measurementId: "G-WNXSG9WDKG"
 };
-
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+// initialize database
 const db = firebase.database();
 
+// get user's data
 const username = prompt("Please Tell Us Your Name");
 
+// submit form
+// listen for submit event on the form and call the postChat function
+document.getElementById("message-form").addEventListener("submit", sendMessage);
+
+// send message to db
 function sendMessage(e) {
     e.preventDefault();
 
@@ -39,13 +46,16 @@ function sendMessage(e) {
     });
 }
 
+// display the messages
+// reference the collection created earlier
 const fetchChat = db.ref("messages/");
 
+// check for new messages using the onChildAdded event listener
 fetchChat.on("child_added", function(snapshot) {
     const messages = snapshot.val();
     const message = `<li class=${
-    username === messages.username ? "sent" : "receive"
-  }><span>${messages.username}: </span>${messages.message}</li>`;
+      username === messages.username ? "sent" : "receive"
+    }><span>${messages.username}: </span>${messages.message}</li>`;
     // append the message on the page
     document.getElementById("messages").innerHTML += message;
 });
